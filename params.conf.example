@@ -1,0 +1,71 @@
+# =========================
+# Oracle source
+# =========================
+SOURCE_HOST=oracle.example.com
+SOURCE_PORT=1521
+SOURCE_SERVICE=ORCL
+SOURCE_USER=your_oracle_user
+ORACLE_PASSWORD=your_oracle_password
+SOURCE_BASE_SCHEMA=ADMIN
+SOURCE_SLICE_SCHEMA=TEST
+
+# =========================
+# Cockroach target
+# =========================
+TARGET_HOST=localhost
+TARGET_PORT=26257
+TARGET_BASE_DB=defaultdb
+TARGET_SLICE_DB=test
+TARGET_USER=root
+CRDB_PASSWORD=
+TARGET_SSLMODE=disable
+TGT_SCHEMA=public
+
+# =========================
+# General
+# =========================
+WINDOW_HOURS=24
+
+# =========================
+# Oracle client (optional)
+# =========================
+ORACLE_LIB_DIR=/path/to/instantclient_23_3
+ORACLE_CLIENT=/path/to/sqlcl/bin/sql
+# or use: ORACLE_CLIENT=sqlplus
+
+# ===================
+# Molt install path
+# ===================
+MOLT_BIN=/path/to/molt
+
+# =========================
+# Behavior
+# =========================
+KEEP_SLICE_TABLES=false
+
+# =========================
+# Optional: Extra flags for molt verify
+# =========================
+MOLT_EXTRA_FLAGS=""
+
+# =========================
+# TABLE MAPPINGS
+# Format: SRC_TABLE:TGT_TABLE:PK_COLUMNS:FILTER_EXPR
+#
+# FILTER_EXPR examples:
+#   - Simple time filter: last_updated_ts >= {{CUTOFF_UTC}}
+#   - Event time filter: event_time >= {{CUTOFF_UTC}}
+#   - Range filter: id BETWEEN 1000 AND 2000
+#   - Composite PK: order_id,line_id
+#
+# {{CUTOFF_UTC}} is automatically replaced with:
+#   Oracle: TO_TIMESTAMP_TZ('YYYY-MM-DD HH24:MI:SS UTC','YYYY-MM-DD HH24:MI:SS TZR')
+#   CRDB:   'YYYY-MM-DD HH24:MI:SS+00:00'::timestamptz
+# =========================
+TABLE_MAPPINGS="
+ORDERS:orders:id:last_updated_ts >= {{CUTOFF_UTC}}
+CUSTOMERS:customers:id:last_updated_ts >= {{CUTOFF_UTC}}
+INVOICE:invoice:id:last_updated_ts >= {{CUTOFF_UTC}}
+LINE_ITEMS:line_items:order_id,line_id:last_updated_ts >= {{CUTOFF_UTC}}
+EVENTS:events:event_id:event_time >= {{CUTOFF_UTC}}
+"

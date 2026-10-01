@@ -1,0 +1,23 @@
+# Configuration files with credentials
+params.conf
+
+# MOLT binary (too large for git)
+molt
+replicator
+*.tgz
+*.tar.gz
+
+# Output files
+*.jsonl
+*.log
+verify_summary_*.txt
+molt_transforms_*.json
+
+# Temporary files
+*.tmp
+*.swp
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
